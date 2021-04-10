@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Youtube Searcher</title>
+        <style></style>
+    </head>
+    <body>
+         <script>
+            function handle_submit() {
+                const search_query = document.getElementsByName("search_query")[0].value;
+
+                if (search_query) {
+                    const results_chunk = document.getElementById("results_chunk");
+                    results_chunk.innerText = "Loading results. Please wait...";
+                    const req = new XMLHttpRequest();
+                    req.addEventListener("load", (_) => {
+                        populate_results(req.response);
+                    });
+                    req.open("GET", `search?term=${search_query}`);
+                    req.send();
+                }
+            }
+
+            // Parses the raw response and populates the result box
+            function populate_results(raw_response) {
+                const list = document.createElement("ol");
+                const parsed = JSON.parse(raw_response);
+                for ([result_name, result_url] of parsed) {
+                    const result_element = document.createElement("li");
+
+                    const link = document.createElement("a");
+                    link.href = `request?yid=${result_url}`;
+                    link.innerText = result_name;
+
+                    result_element.appendChild(link);
+                    list.appendChild(result_element);
+                }
+
+                const results_chunk = document.getElementById("results_chunk");
+                results_chunk.innerHTML = "";
+                results_chunk.appendChild(list);
+            }
+        </script>
+
+        <h1>Youtube Searcher 3000</h1>
+        <div id="query_form">
+            <input type="text" name="search_query">
+            <input type="submit" onclick="handle_submit()">
+        </div>
+
+        <h2>Results:</h2>
+        <div id="results_chunk">
+
+        </div>
+    </body>
+</html>
+
+
