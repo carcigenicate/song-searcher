@@ -7,7 +7,11 @@
     <body>
          <script>
             function handle_submit() {
-                const search_query = document.getElementsByName("search_query")[0].value;
+                const search_query_elem = document.getElementsByName("search_query")[0];
+                const search_query = search_query_elem.value;
+
+                // Clear out text field to make it harder to double submit.
+                search_query_elem.value = "";
 
                 if (search_query) {
                     const results_chunk = document.getElementById("results_chunk");
@@ -40,12 +44,19 @@
                 results_chunk.innerHTML = "";
                 results_chunk.appendChild(list);
             }
+
+            function key_handler(event) {
+                event.preventDefault();
+                if (event.keyCode === 13) {
+                    handle_submit();
+                }
+            }
         </script>
 
         <h1>Youtube Searcher 3000</h1>
         <div id="query_form">
-            <input type="text" name="search_query">
-            <input type="submit" onclick="handle_submit()">
+            <input type="text" name="search_query" onkeyup="key_handler(event)">
+            <input type="submit" onclick="handle_submit()" id="submit">
         </div>
 
         <h2>Results:</h2>
