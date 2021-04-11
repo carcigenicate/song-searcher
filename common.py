@@ -6,7 +6,6 @@ HTTP_ENCODING = "ascii"
 
 RUN_PATH = Path(__file__).parent.absolute()
 
-print()
 
 class Request(NamedTuple):
     """Holds all the pre-processed information that's required to handle a request."""

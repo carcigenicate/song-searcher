@@ -1,6 +1,5 @@
 import asyncio
 import json
-import threading
 
 import common as comm
 from simple_handlers import bad_request_handler
@@ -34,3 +33,5 @@ def handle_youtube_search(request: comm.Request) -> None:
             filtered_results = results[:MAX_RESULTS]
             str_results = json.dumps(filtered_results)
             http_handler.wfile.write(str_results.encode(comm.HTTP_ENCODING))
+
+        # If the search term is empty, they bypassed front-end restrictions, so just drop request

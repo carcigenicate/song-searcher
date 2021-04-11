@@ -1,5 +1,4 @@
-import asyncio
-import threading
+import logging
 
 import pyppeteer
 from pyppeteer.errors import TimeoutError
@@ -37,11 +36,15 @@ async def get_search_results_async(query: str) -> List[Tuple[str, str]]:
         await html.arender(timeout=RENDER_TIMEOUT_SECS)
         attrs = (link.attrs for link in html.find(SIMPLE_SEARCH_RESULT_CLASS_FINGERPRINT))
 
-        # TODO: Fallback if attrs was empty
-        pairs = ((attr['title'], attr['href']) for attr in attrs)  # Extract the title and hrefs
-        return [(title, href.split("=")[-1]) for title, href in pairs]  # Get the video codes out of the pairs
+        if attrs:
+            # TODO: Fallback if attrs was empty
+            pairs = ((attr['title'], attr['href']) for attr in attrs)  # Extract the title and hrefs
+            return [(title, href.split("=")[-1]) for title, href in pairs]  # Get the video codes out of the pairs
+        else:
+            logging.warning(f"Scraping return 0 results for {query}.")
+            return []
     except TimeoutError:
-        # TODO: Log
+        logging.warning(f"Rendering of request for {query} timed out (max {RENDER_TIMEOUT_SECS} seconds).")
         return []
     finally:
         if session:

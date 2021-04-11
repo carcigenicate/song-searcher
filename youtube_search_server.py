@@ -1,5 +1,5 @@
 from __future__ import annotations
-from http.server import ThreadingHTTPServer, HTTPServer, BaseHTTPRequestHandler
+from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from typing import Tuple
 from typing import Dict, Callable
 from urllib.parse import parse_qs, urlparse

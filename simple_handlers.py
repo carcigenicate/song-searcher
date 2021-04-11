@@ -1,4 +1,5 @@
 import json
+import logging
 
 from paho.mqtt.publish import single as publish_single
 
@@ -10,6 +11,7 @@ REQUEST_PARAMETER = "yid"
 HOSTNAME = "localhost"
 USERNAME = "reproject"
 PASSWORD = "reproject"
+
 
 # To prevent 400 errors when the browser auto-attempts to get favicon.
 def favicon_request_handler(request: comm.Request) -> None:
@@ -31,6 +33,7 @@ def song_request_handler(request: comm.Request) -> None:
                                       {"Content-Type": "application/json"},
                                       json.dumps({"success": "Request Received"}))
         except ConnectionRefusedError:
+            logging.warning("MQTT server rejected connection/is not started.")
             bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
 
 
@@ -48,4 +51,5 @@ def index_handler(request: comm.Request) -> None:
     result = comm.send_html_page(request, "index.html")
 
     if not result:
+        logging.warning("Failed to load page: index.html")
         bad_request_handler(request, "Could not load page.")

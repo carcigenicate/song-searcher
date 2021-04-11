@@ -3,6 +3,7 @@
 The root of the server. Parses and standardizes incoming requests, then dispatches out to the appropriate handlers
   based on the request.
 """
+import logging
 import threading
 
 from youtube_search_server import YoutubeSearchServer
@@ -22,7 +23,7 @@ def start_server(port: int) -> None:
         try:
             server.serve_forever()  # TODO: Reduce polling interval?
         except KeyboardInterrupt:
-            print("Shutting down server...")
+            logging.info("Shutting down server.")
 
 
 if __name__ == "__main__":
