@@ -33,6 +33,7 @@ async def get_search_results_async(query: str) -> List[Tuple[str, str]]:
         html: HTML = response.html
         await html.arender()
         attrs = (link.attrs for link in html.find(SIMPLE_SEARCH_RESULT_CLASS_FINGERPRINT))
+        
         # TODO: Fallback if attrs was empty
         pairs = ((attr['title'], attr['href']) for attr in attrs)  # Extract the title and hrefs
         return [(title, href.split("=")[-1]) for title, href in pairs]  # Get the video codes out of the pairs
