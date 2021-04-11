@@ -23,19 +23,22 @@ def song_request_handler(request: comm.Request) -> None:
     if not song_request:
         bad_request_handler(request, "Missing youtube video ID.")
     else:
-        comm.send_simple_response(request,
-                                  200,
-                                  {"Content-Type": "application/json"},
-                                  json.dumps({"success": "Request Received"}))
-        auth = {"username": USERNAME, "password": PASSWORD}
-        publish_single(REQUEST_TOPIC, song_request[0], auth=auth)
+        try:
+            auth = {"username": USERNAME, "password": PASSWORD}
+            publish_single(REQUEST_TOPIC, song_request[0], auth=auth)
+            comm.send_simple_response(request,
+                                      200,
+                                      {"Content-Type": "application/json"},
+                                      json.dumps({"success": "Request Received"}))
+        except ConnectionRefusedError:
+            bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
 
 
 def bad_request_handler(request: comm.Request, reason: str = "") -> None:
     """Outputs a 400 JSON response with an optional message."""
     message_ending = f": {reason}" if reason else ""
     comm.send_simple_response(request,
-                              200,
+                              400,
                               {"Content-Type": "application/json"},
                               json.dumps({"error": f"Bad Request{message_ending}"}))
 
