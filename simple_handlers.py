@@ -1,6 +1,7 @@
 import json
 import logging
 
+from paho.mqtt import MQTTException
 from paho.mqtt.publish import single as publish_single
 
 import common as comm
@@ -8,7 +9,7 @@ import common as comm
 REQUEST_TOPIC = "request"
 REQUEST_PARAMETER = "yid"
 
-HOSTNAME = "localhost"
+HOSTNAME = "192.168.50.48"
 USERNAME = "reproject"
 PASSWORD = "reproject"
 
@@ -27,7 +28,7 @@ def song_request_handler(request: comm.Request) -> None:
     else:
         try:
             auth = {"username": USERNAME, "password": PASSWORD}
-            publish_single(REQUEST_TOPIC, song_request[0], auth=auth)
+            publish_single(REQUEST_TOPIC, song_request[0], auth=auth, hostname=HOSTNAME)
             comm.send_simple_response(request,
                                       200,
                                       {"Content-Type": "application/json"},
@@ -35,6 +36,10 @@ def song_request_handler(request: comm.Request) -> None:
         except ConnectionRefusedError:
             logging.warning("MQTT server rejected connection/is not started.")
             bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
+        except MQTTException as e:
+            logging.warning(f"Generic MQTT error: {e}")
+            bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
+
 
 
 def bad_request_handler(request: comm.Request, reason: str = "") -> None:

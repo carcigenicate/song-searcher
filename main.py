@@ -32,4 +32,6 @@ if __name__ == "__main__":
                         help="The port to have the server listen on.")
     args = parser.parse_args()
 
+    logging.basicConfig(level=logging.WARNING)
+
     start_server(args.port)
