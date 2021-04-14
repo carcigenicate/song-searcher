@@ -23,16 +23,21 @@ def favicon_request_handler(request: comm.Request) -> None:
 
 def song_request_handler(request: comm.Request) -> None:
     song_request = request.query.get(REQUEST_PARAMETER)
+    print("HANDLER ENTERED!")
     if not song_request:
+        print("BAD REQUEST!")
         bad_request_handler(request, "Missing youtube video ID.")
     else:
         try:
             auth = {"username": USERNAME, "password": PASSWORD}
+            print("PUBLISHING!")
             publish_single(REQUEST_TOPIC, song_request[0], auth=auth, hostname=HOSTNAME)
+            print("PUBLISHED!")
             comm.send_simple_response(request,
                                       200,
                                       {"Content-Type": "application/json"},
                                       json.dumps({"success": "Request Received"}))
+            print("RESPONSE SENT!")
         except ConnectionRefusedError:
             logging.warning("MQTT server rejected connection/is not started.")
             bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
