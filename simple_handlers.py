@@ -3,6 +3,7 @@ import logging
 
 from paho.mqtt import MQTTException
 from paho.mqtt.publish import single as publish_single
+from paho.mqtt.client import Client
 
 import common as comm
 
@@ -20,6 +21,23 @@ def favicon_request_handler(request: comm.Request) -> None:
                               200,
                               {})
 
+def publish(payload: str) -> None:
+    def on_connect(cl: Client, userdata, flags, rc):
+        print("Publishing")
+        cl.publish(REQUEST_TOPIC, payload)
+        print("Published")
+    def on_publish(cl: Client, userdata, mid):
+        print("Connected")
+        cl.disconnect()
+        print("Disconnected")
+
+    client = Client()
+    client.username_pw_set(USERNAME, PASSWORD)
+    client.on_connect = on_connect
+    client.on_publish = on_publish
+    client.connect(HOSTNAME)
+    client.loop_forever()
+
 
 def song_request_handler(request: comm.Request) -> None:
     song_request = request.query.get(REQUEST_PARAMETER)
@@ -31,7 +49,7 @@ def song_request_handler(request: comm.Request) -> None:
         try:
             auth = {"username": USERNAME, "password": PASSWORD}
             print("PUBLISHING!")
-            publish_single(REQUEST_TOPIC, song_request[0], auth=auth, hostname=HOSTNAME)
+            publish(song_request[0])
             print("PUBLISHED!")
             comm.send_simple_response(request,
                                       200,
