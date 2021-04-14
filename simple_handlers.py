@@ -9,7 +9,7 @@ import common as comm
 REQUEST_TOPIC = "request"
 REQUEST_PARAMETER = "yid"
 
-HOSTNAME = "localhost"
+HOSTNAME = "174.0.233.205"  # TODO: Change back to localhost
 USERNAME = "reproject"
 PASSWORD = "reproject"
 
