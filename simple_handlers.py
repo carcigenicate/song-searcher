@@ -3,14 +3,13 @@ import logging
 
 from paho.mqtt import MQTTException
 from paho.mqtt.publish import single as publish_single
-from paho.mqtt.client import Client, MQTTv31
 
 import common as comm
 
 REQUEST_TOPIC = "request"
 REQUEST_PARAMETER = "yid"
 
-HOSTNAME = "174.0.233.205"  # TODO: Change back to localhost
+HOSTNAME = "192.168.50.156"  # TODO: Change back to localhost
 USERNAME = "reproject"
 PASSWORD = "reproject"
 
@@ -21,42 +20,15 @@ def favicon_request_handler(request: comm.Request) -> None:
                               200,
                               {})
 
-def publish(payload: str) -> None:
-    print("Publish entered")
-    def on_connect(cl: Client, userdata, flags, rc):
-        print("Publishing")
-        cl.publish(REQUEST_TOPIC, payload)
-        print("Published")
-    def on_publish(cl: Client, userdata, mid):
-        print("Connected")
-        cl.disconnect()
-        print("Disconnected")
-
-    client = Client(clean_session=True, protocol=MQTTv31)
-    print("Client created")
-    client.username_pw_set(USERNAME, PASSWORD)
-    print("UP Set")
-    client.on_connect = on_connect
-    client.on_publish = on_publish
-    print("Handlers Set")
-    client.connect(HOSTNAME)
-    print("Connected. Looping...")
-    client.loop_forever()
-    print("Ending...")
-
 
 def song_request_handler(request: comm.Request) -> None:
     song_request = request.query.get(REQUEST_PARAMETER)
-    print("HANDLER ENTERED!")
     if not song_request:
-        print("BAD REQUEST!")
         bad_request_handler(request, "Missing youtube video ID.")
     else:
         try:
             auth = {"username": USERNAME, "password": PASSWORD}
-            print("PUBLISHING!")
-            publish(song_request[0])
-            print("PUBLISHED!")
+            publish_single(REQUEST_TOPIC, song_request[0], auth=auth, hostname=HOSTNAME)
             comm.send_simple_response(request,
                                       200,
                                       {"Content-Type": "application/json"},
@@ -68,7 +40,6 @@ def song_request_handler(request: comm.Request) -> None:
         except MQTTException as e:
             logging.warning(f"Generic MQTT error: {e}")
             bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
-
 
 
 def bad_request_handler(request: comm.Request, reason: str = "") -> None:
