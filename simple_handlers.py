@@ -4,7 +4,6 @@ import logging
 from paho.mqtt import MQTTException
 from paho.mqtt.publish import single as publish_single
 from paho.mqtt.client import Client, MQTTv31
-from paho.mqtt
 
 import common as comm
 
