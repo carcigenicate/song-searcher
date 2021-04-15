@@ -3,7 +3,8 @@ import logging
 
 from paho.mqtt import MQTTException
 from paho.mqtt.publish import single as publish_single
-from paho.mqtt.client import Client
+from paho.mqtt.client import Client, MQTTv31
+from paho.mqtt
 
 import common as comm
 
@@ -32,7 +33,7 @@ def publish(payload: str) -> None:
         cl.disconnect()
         print("Disconnected")
 
-    client = Client(clean_session=True)
+    client = Client(clean_session=True, protocol=MQTTv31)
     print("Client created")
     client.username_pw_set(USERNAME, PASSWORD)
     print("UP Set")
