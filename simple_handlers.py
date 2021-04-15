@@ -22,6 +22,7 @@ def favicon_request_handler(request: comm.Request) -> None:
                               {})
 
 def publish(payload: str) -> None:
+    print("Publish entered")
     def on_connect(cl: Client, userdata, flags, rc):
         print("Publishing")
         cl.publish(REQUEST_TOPIC, payload)
@@ -31,12 +32,17 @@ def publish(payload: str) -> None:
         cl.disconnect()
         print("Disconnected")
 
-    client = Client()
+    client = Client(clean_session=True)
+    print("Client created")
     client.username_pw_set(USERNAME, PASSWORD)
+    print("UP Set")
     client.on_connect = on_connect
     client.on_publish = on_publish
+    print("Handlers Set")
     client.connect(HOSTNAME)
+    print("Connected. Looping...")
     client.loop_forever()
+    print("Ending...")
 
 
 def song_request_handler(request: comm.Request) -> None:
