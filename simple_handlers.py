@@ -1,19 +1,7 @@
 import json
 import logging
 
-from paho.mqtt import MQTTException
-from paho.mqtt.publish import single as publish_single
-import ssl
-
 import common as comm
-
-REQUEST_TOPIC = "request"
-REQUEST_PARAMETER = "yid"
-
-HOSTNAME = "e944d32c8e874cd4979367462d2cbb88.s1.eu.hivemq.cloud"
-AUTH = {"username": "reverseeng",
-        "password": "Password1"}
-PORT = 8883
 
 
 # To prevent 400 errors when the browser auto-attempts to get favicon.
@@ -21,32 +9,6 @@ def favicon_request_handler(request: comm.Request) -> None:
     comm.send_simple_response(request,
                               200,
                               {})
-
-
-def song_request_handler(request: comm.Request) -> None:
-    song_request = request.query.get(REQUEST_PARAMETER)
-    if not song_request:
-        bad_request_handler(request, "Missing youtube video ID.")
-    else:
-        try:
-            publish_single(REQUEST_TOPIC,
-                           song_request[0],
-                           auth=AUTH,
-                           hostname=HOSTNAME,
-                           port=PORT,
-                           tls={"tls_version": ssl.PROTOCOL_TLS},
-                           keepalive=10)  # Publish timeout
-            comm.send_simple_response(request,
-                                      200,
-                                      {"Content-Type": "application/json"},
-                                      json.dumps({"success": "Request Received"}))
-        # These errors will only be thrown if the hostname is something obviously wrong like "localhost".
-        except ConnectionRefusedError:
-            logging.warning("MQTT server rejected connection/is not started.")
-            bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
-        except MQTTException as e:
-            logging.warning(f"Generic MQTT error: {e}")
-            bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
 
 
 def bad_request_handler(request: comm.Request, reason: str = "") -> None:

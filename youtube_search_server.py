@@ -5,7 +5,8 @@ from typing import Dict, Callable
 from urllib.parse import parse_qs, urlparse
 
 from youtube_search_handler import handle_youtube_search
-from simple_handlers import bad_request_handler, index_handler, song_request_handler
+from simple_handlers import bad_request_handler, index_handler
+from publish_handler import song_request_handler
 import common as comm
 
 # An "interface" representing the expected signature of functions that handle requests

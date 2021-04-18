@@ -21,6 +21,7 @@ OPTIONS = {"handleSIGINT": False,
            "handleSIGTERM": False,
            "handleSIGHUP": False}
 
+
 async def get_search_results_async(query: str) -> List[Tuple[str, str]]:
     encoded_query = quote_plus(query)
     session = None
@@ -31,6 +32,8 @@ async def get_search_results_async(query: str) -> List[Tuple[str, str]]:
         session = AsyncHTMLSession(browser_args=OPTIONS)
         session._browser = browser
 
+        # The library is doing sketchy stuff that breaks static-analysis here.
+        # noinspection PyUnresolvedReferences
         response = await session.get(SEARCH_BASE + encoded_query)
         html: HTML = response.html
         await html.arender(timeout=RENDER_TIMEOUT_SECS)

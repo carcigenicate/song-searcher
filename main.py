@@ -4,10 +4,11 @@ The root of the server. Parses and standardizes incoming requests, then dispatch
   based on the request.
 """
 import logging
-import threading
+
+from argparse import ArgumentParser
 
 from youtube_search_server import YoutubeSearchServer
-from argparse import ArgumentParser
+
 
 DEFAULT_SERVER_PORT = 5555
 
