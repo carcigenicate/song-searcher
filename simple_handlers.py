@@ -12,8 +12,7 @@ REQUEST_PARAMETER = "yid"
 HOSTNAME = "e944d32c8e874cd4979367462d2cbb88.s1.eu.hivemq.cloud"
 AUTH = {"username": "reverseeng",
         "password": "Password1"}
-
-
+PORT = 8883
 
 
 # To prevent 400 errors when the browser auto-attempts to get favicon.

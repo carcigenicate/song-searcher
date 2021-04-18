@@ -34,10 +34,12 @@ async def get_search_results_async(query: str) -> List[Tuple[str, str]]:
         response = await session.get(SEARCH_BASE + encoded_query)
         html: HTML = response.html
         await html.arender(timeout=RENDER_TIMEOUT_SECS)
-        attrs = (link.attrs for link in html.find(SIMPLE_SEARCH_RESULT_CLASS_FINGERPRINT))
+        attrs = [link.attrs for link in html.find(SIMPLE_SEARCH_RESULT_CLASS_FINGERPRINT)]
 
         if attrs:
-            pairs = ((attr['title'], attr['href']) for attr in attrs)  # Extract the title and hrefs
+            pairs = ((attr["title"], attr["href"])
+                     for attr in attrs
+                     if "title" in attr and "href" in attr)
             return [(title, href.split("=")[-1]) for title, href in pairs]  # Get the video codes out of the pairs
         else:
             logging.warning(f"Scraping return 0 results for {query}.")
@@ -48,4 +50,3 @@ async def get_search_results_async(query: str) -> List[Tuple[str, str]]:
     finally:
         if session:
             await session.close()
-
