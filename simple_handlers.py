@@ -9,9 +9,11 @@ import common as comm
 REQUEST_TOPIC = "request"
 REQUEST_PARAMETER = "yid"
 
-HOSTNAME = "192.168.50.156"  # TODO: Change back to localhost
-USERNAME = "reproject"
-PASSWORD = "reproject"
+HOSTNAME = "e944d32c8e874cd4979367462d2cbb88.s1.eu.hivemq.cloud"
+AUTH = {"username": "reverseeng",
+        "password": "Password1"}
+
+
 
 
 # To prevent 400 errors when the browser auto-attempts to get favicon.
@@ -27,8 +29,7 @@ def song_request_handler(request: comm.Request) -> None:
         bad_request_handler(request, "Missing youtube video ID.")
     else:
         try:
-            auth = {"username": USERNAME, "password": PASSWORD}
-            publish_single(REQUEST_TOPIC, song_request[0], auth=auth, hostname=HOSTNAME)
+            publish_single(REQUEST_TOPIC, song_request[0], auth=AUTH, hostname=HOSTNAME)
             comm.send_simple_response(request,
                                       200,
                                       {"Content-Type": "application/json"},
