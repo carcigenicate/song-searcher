@@ -3,6 +3,7 @@ import logging
 
 from paho.mqtt import MQTTException
 from paho.mqtt.publish import single as publish_single
+import ssl
 
 import common as comm
 
@@ -28,12 +29,18 @@ def song_request_handler(request: comm.Request) -> None:
         bad_request_handler(request, "Missing youtube video ID.")
     else:
         try:
-            publish_single(REQUEST_TOPIC, song_request[0], auth=AUTH, hostname=HOSTNAME)
+            publish_single(REQUEST_TOPIC,
+                           song_request[0],
+                           auth=AUTH,
+                           hostname=HOSTNAME,
+                           port=PORT,
+                           tls={"tls_version": ssl.PROTOCOL_TLS},
+                           keepalive=10)  # Publish timeout
             comm.send_simple_response(request,
                                       200,
                                       {"Content-Type": "application/json"},
                                       json.dumps({"success": "Request Received"}))
-            print("RESPONSE SENT!")
+        # These errors will only be thrown if the hostname is something obviously wrong like "localhost".
         except ConnectionRefusedError:
             logging.warning("MQTT server rejected connection/is not started.")
             bad_request_handler(request, "Unable to contact broker. Message was not passed on.")
