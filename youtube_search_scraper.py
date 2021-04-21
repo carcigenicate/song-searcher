@@ -6,13 +6,15 @@ from requests_html import HTML, AsyncHTMLSession
 from typing import List, Tuple
 from urllib.parse import quote_plus
 
-OLD_SEARCH_RESULT_CLASS_FINGERPRINT = ".text-wrapper.style-scope.ytd-video-renderer"
 SIMPLE_SEARCH_RESULT_CLASS_FINGERPRINT = ".yt-simple-endpoint.style-scope.ytd-video-renderer"
-FALLBACK_SEARCH_RESULT_CLASS_FINGERPRINT = ".yt-simple-endpoint.style-scope.ytd-rich-grid-media"
+# The fingerprint for the tiled results page that is occasionally served to us.
+# Not implemented because it's too rare of an event to test properly.
+#FALLBACK_SEARCH_RESULT_CLASS_FINGERPRINT = ".yt-simple-endpoint.style-scope.ytd-rich-grid-media"
 
 SEARCH_BASE = "https://www.youtube.com/results?search_query="
 
-RENDER_TIMEOUT_SECS = 10
+# A little long, but this makes it more "reliable" when hosted on an unreliable hosting service.
+RENDER_TIMEOUT_SECS = 20
 
 
 # Because attempting to handle signals on threads other than the main is an error, and the server is multithreaded.
