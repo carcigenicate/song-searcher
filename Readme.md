@@ -6,4 +6,5 @@ Run `main.py` to start the web server. It optionally accepts a `--port <port>` c
 
 The broker specified in the configuration must be up and reachable before requests can be sent to this program.
 
-If you need a configuration file created, run `broker_config.py`, answer the questions, and it will generate one for you.
+If you need a configuration file created, run `broker_config.py`, answer the questions, and it will generate one for
+you.
