@@ -12,7 +12,7 @@ import common as comm
 # An "interface" representing the expected signature of functions that handle requests
 RequestHandler = Callable[[comm.Request], None]
 
-# TODO: favicon.ico handler
+
 GET_HANDLERS: Dict[str, RequestHandler] = \
     {"": index_handler,
      "search": handle_youtube_search,
@@ -22,14 +22,10 @@ GET_HANDLERS: Dict[str, RequestHandler] = \
 class HTTPHandler(BaseHTTPRequestHandler):
     """Handles any incoming HTTP request to the server."""
     def do_GET(self) -> None:
-        # TODO: Exception handler
         request = self.produce_standard_request()
         handler = GET_HANDLERS.get(request.path, bad_request_handler)
-
         handler(request)
 
-    # TODO: Test what will need to change to handle POSTs.
-    #   Does parsed_url.path start with a "/" for POST?
     def produce_standard_request(self) -> comm.Request:
         parsed_url = urlparse(self.path)
         return comm.Request(query=parse_qs(parsed_url.query),

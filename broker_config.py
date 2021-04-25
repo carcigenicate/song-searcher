@@ -28,6 +28,7 @@ class Config(NamedTuple):
         with open(path, "w") as file:
             file.write(serialized)
 
+
 if __name__ == "__main__":
     questions = ["hostname", "port", "username", "password", "topic"]
     answers = [input(f"{q.capitalize()}? ") for q in questions]

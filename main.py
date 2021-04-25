@@ -17,7 +17,7 @@ def start_server(port: int) -> None:
     # This will block for several seconds as the internal pool is instantiated.
     with YoutubeSearchServer(("", port)) as server:
         try:
-            server.serve_forever()  # TODO: Reduce polling interval?
+            server.serve_forever()
         except KeyboardInterrupt:
             logging.info("Shutting down server.")
 

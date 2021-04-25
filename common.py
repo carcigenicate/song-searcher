@@ -33,7 +33,7 @@ def send_html_page(request: Request, page_path: str) -> bool:
         # RUN_PATH is so relative page_paths don't break when server is started from a directory
         #   other than the project root.
         with open(RUN_PATH / page_path, "rb") as f:
-            file = f.read()  # TODO: Read incrementally to avoid holding all in memory? Holds up file.
+            file = f.read()
     except FileNotFoundError:
         return False
 
